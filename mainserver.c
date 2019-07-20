@@ -26,6 +26,8 @@ void *runSocket(void *item)
         }  
         
 	else if(bytes > 0){
+	    printf("From Proxy Server : %s\n", buffer);
+	    strcat(buffer, " from main server\n");
 	    write(c_fd, buffer, sizeof(buffer));  
         }
     }       

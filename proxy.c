@@ -58,20 +58,22 @@ void *runSocket(void *item)
         memset(&buffer, '\0', sizeof(buffer));  
         bytes = read(info->client_fd, buffer, sizeof(buffer));   
 	if(bytes > 0)   
-        {  
-            write(server_fd, buffer, sizeof(buffer));  
+        { 
             printf("From Client : %s\n", buffer);
+            strcat(buffer, " from Client to Server\n");
+	    write(server_fd, buffer, sizeof(buffer));  
         }
 
         memset(&buffer, '\0', sizeof(buffer));  
         bytes = read(server_fd, buffer, sizeof(buffer));  
         if(bytes > 0) 
         {  
-            write(info->client_fd, buffer, sizeof(buffer));  
             printf("From main Server : %s\n", buffer);
+	    strcat(buffer, " from Server to Client\n");
+            write(info->client_fd, buffer, sizeof(buffer));  
         }
     }
-//    close(server_fd);
+    close(server_fd);
     return NULL;  
 }  
 
@@ -137,8 +139,8 @@ int main(int argc,char *argv[])
         strcpy(item->port,port);  
         pthread_create(&tid, NULL, runSocket, (void *)item);  
         
-//	close(client_fd);
     }  
-  //  close(proxy_fd);
+    close(client_fd);
+    close(proxy_fd);
     return 0;  
 }
